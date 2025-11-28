@@ -5,8 +5,8 @@ import { Lock, Mail, Eye, EyeOff, ArrowRight, CheckCircle2, Sprout, Leaf, CloudS
 
 const Login = () => {
   // Pre-fill default credentials as requested
-  const [email, setEmail] = useState('admin@cphaco.vn');
-  const [password, setPassword] = useState('Cphaco@12345');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,6 +23,10 @@ const Login = () => {
     setTimeout(() => {
       const success = login(email, password);
       if (success) {
+        // Reset fields after successful login
+        setEmail('');
+        setPassword('');
+        setLoading(false);
         navigate('/');
       } else {
         setError('Thông tin đăng nhập không chính xác.');
