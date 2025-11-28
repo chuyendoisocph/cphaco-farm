@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFarm } from '../context/FarmContext';
 import { Lock, Mail, Eye, EyeOff, ArrowRight, CheckCircle2, Sprout, Leaf, CloudSun, AlertCircle } from 'lucide-react';
@@ -7,6 +7,7 @@ const Login = () => {
   // Pre-fill default credentials as requested
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,16 @@ const Login = () => {
   const { login } = useFarm();
   const navigate = useNavigate();
 
+  // Restore saved email and redirect if already authenticated
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('farmEmail');
+    if (savedEmail) setEmail(savedEmail);
+    const auth = localStorage.getItem('farmAuth');
+    if (auth === 'true') {
+      navigate('/');
+    }
+  }, [navigate]);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -26,9 +37,18 @@ const Login = () => {
         // Reset fields after successful login
         setEmail('');
         setPassword('');
+        // Persist auth/email based on "remember"
+        localStorage.setItem('farmAuth', 'true');
+        if (remember) {
+          localStorage.setItem('farmEmail', email);
+        } else {
+          localStorage.removeItem('farmEmail');
+        }
         setLoading(false);
         navigate('/');
       } else {
+        // Clear any stale auth flag
+        localStorage.removeItem('farmAuth');
         setError('Thông tin đăng nhập không chính xác.');
         setLoading(false);
       }
@@ -478,7 +498,12 @@ const Login = () => {
 
                   <div className="flex justify-between items-center mb-6">
                       <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                          <input 
+                            type="checkbox" 
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                            checked={remember}
+                            onChange={(e) => setRemember(e.target.checked)}
+                          />
                           <span className="text-sm text-gray-600">Ghi nhớ đăng nhập</span>
                       </label>
                       <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700">Quên mật khẩu?</a>
