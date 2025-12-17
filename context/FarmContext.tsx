@@ -186,7 +186,7 @@ export const FarmProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // --- Auth Actions ---
   const login = (email: string, pass: string): boolean => {
     // Authenticate against strict hardcoded credentials
-    if (email === 'admin@cphaco.vn' && pass === 'Cphaco@12345') {
+    if (email === 'trietphu@gmail.com' && pass === '12345678') {
       setIsAuthenticated(true);
       localStorage.setItem('cphaco_auth', 'true');
       return true;
